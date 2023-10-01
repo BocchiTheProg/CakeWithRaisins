@@ -80,7 +80,13 @@ end
 #cake = "........\n..o.....\n...o....\n........"
 #cake = ".o......\n......o.\n....o...\n..o....."
 cake = ".o.o....\n........\n....o...\n........\n.....o..\n........"
+unless ARGV.empty?
+  puts "Taking cake from input."
+  cake.clear
+  ARGV.each { |i| cake += i + "\n"}
+end
 puts "cake =\n#{cake}"
+puts "P.S. If your cake not looking like you wanted, remember to use spacebars between cake \"layers(levels)\""
 raisins = cake.count("o")
 puts "Amount of raisins:#{raisins}"
 unless cake_valid?(cake)
