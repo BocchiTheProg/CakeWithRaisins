@@ -1,6 +1,6 @@
 def cut(ar_cake, x, y, width, height)
   (y...(y + height)).each do |i|
-    (x...(x + width)).each { |j| ar_cake[i][j] = " "}
+    (x...(x + width)).each { |j| ar_cake[i][j] = "*"}
   end
   ar_cake
 end
@@ -16,7 +16,7 @@ end
 
 def find_first_not_cut_spot(ar_cake)
   (0...ar_cake.size).each do |i|
-    (0...ar_cake[i].size).each {|j| return {y:i, x:j} if ar_cake[i][j] != " "}
+    (0...ar_cake[i].size).each {|j| return {y:i, x:j} if ar_cake[i][j] != "*"}
   end
   nil
 end
@@ -26,14 +26,21 @@ def slice_valid(ar_cake, x, y, width, height)
   slice = ar_cake.slice(y, height)
   slice = slice.map { |i| i.slice(x, width)}
   str_slice = arr_to_string(slice)
-  return nil if str_slice.include? " "
-  raisins = str_slice.count("o")
-  return nil if raisins != 1
+  # puts "Trying to cut the slice:"
+  # puts str_slice
+  if str_slice.include? "*" or str_slice.count("o") != 1
+    # puts "Invalid slice (have already cut pieces or amount of raisins is not equal to 1)"
+    return nil
+  end
   str_slice
 end
 
 def searching(ar_cake, slices, size)
+  # puts "Current slices:\n#{slices}"
+  # puts "Current state(form) of cake:"
+  # puts arr_to_string(ar_cake)
   position = find_first_not_cut_spot(ar_cake)
+  # puts "Position of top left available spot:#{position}"
   return slices if position == nil
   slice_width = size
   loop do
@@ -60,11 +67,12 @@ def searching(ar_cake, slices, size)
     end
     slice_width -= 1
   end
+  # puts "Impossible to continue cutting, returning back to previous state(form) of cake"
   []
 end
 
 def cake_valid?(cake)
-  false if cake.count("o") <=1 or cake.count("o") >= 10
+  return false if cake.count("o") <=1 or cake.count("o") >= 10
   array_cake = cake.split("\n")
   cake_width = array_cake[0].size
   array_cake.each do |i|
